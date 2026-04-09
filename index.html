@@ -1277,6 +1277,14 @@
         </div>
 
         <p>Una cosa es generar algo que corre. Otra muy distinta es definir una estructura que pueda mantenerse, entenderse y evolucionar bien con el tiempo. Por eso metodologías como el <strong>Spec-Driven Development (SDD)</strong> se vuelven valiosas: primero se define con claridad qué problema se resuelve, cómo debería comportarse el sistema y qué límites debe tener… y después se implementa.</p>
+        <div class="callout neutral"><strong>SDD, explicado corto:</strong> antes de construir, especificas qué debe pasar, con qué datos y bajo qué reglas. No es burocracia. Es claridad operativa.</div>
+
+        <div class="insight">
+          <div class="insight-inner">
+            <p class="insight-text">En mi experiencia liderando proyectos técnicos, la mayoría de errores no nace en el código. Nace antes: en la falta de claridad. Ese es el verdadero valor del SDD. No es una metodología “solo para ingenieros”; es un filtro de calidad para diseñar la lógica antes de que la IA produzca la primera salida.</p>
+            <p class="insight-attr">— El factor SDD en la práctica</p>
+          </div>
+        </div>
 
         <div class="callout">👉 La velocidad sin especificación produce fragilidad. La claridad antes de ejecutar produce sistemas más sostenibles.</div>
 
@@ -1339,6 +1347,22 @@
           <div class="signal-box red">
             <div class="signal-box-label">🚩 Señal de límite</div>
             <ul><li>Todo se rompe cuando creces</li><li>Todo depende de ti</li><li>No puedes escalar sin ti</li></ul>
+          </div>
+        </div>
+
+        <h3>El método juanklagos: SDD para mentes no técnicas</h3>
+        <p>Muchos creen que el <strong>Spec-Driven Development</strong> es solo para ingenieros. No lo veo así. En la práctica, SDD es un ejercicio de claridad mental: obligarte a pensar bien antes de pedirle velocidad a la máquina.</p>
+        <div class="checklist">
+          <div class="check-item"><strong>Define el qué:</strong> antes de abrir ChatGPT, escribe qué debe pasar exactamente.</div>
+          <div class="check-item"><strong>Define entradas y salidas:</strong> si no sabes qué datos entran y qué resultado esperas, la IA va a rellenar huecos por su cuenta.</div>
+          <div class="check-item"><strong>Valida la lógica en lenguaje humano:</strong> si tu flujo no se entiende por escrito, tampoco será robusto cuando lo ejecutes con IA.</div>
+        </div>
+        <div class="callout gold">El resultado no es “verse técnico”. El resultado es acercarte a calidad profesional sin escribir código, solo por especificar mejor.</div>
+
+        <div class="insight">
+          <div class="insight-inner">
+            <p class="insight-text">En el Laboratorio IA de Praxis Studio trabajamos con perfiles de marketing, ventas y operaciones. El patrón se repitió rápido: quien usaba prompts al azar obtenía cosas frágiles; quien especificaba bien lograba automatizaciones mucho más robustas. La diferencia no era técnica. Era estructural.</p>
+            <p class="insight-attr">— Nota del laboratorio IA</p>
           </div>
         </div>
       </div>
@@ -1486,6 +1510,12 @@
           <div class="check-item">"Dame una razón por la que NO deberíamos usar esta herramienta que hoy construimos con IA."</div>
         </div>
         <div class="callout neutral">Las mejores respuestas no suenan impresionantes. Suenan claras, sobrias y realistas.</div>
+
+        <h3>Mi experiencia en el Laboratorio IA</h3>
+        <p>Durante el taller vimos algo que me confirmó muchas intuiciones: una persona no técnica, con buen SDD, puede llegar bastante lejos. Puede levantar un producto funcional, ordenar flujos y reducir mucha fricción inicial.</p>
+        <div class="callout">En términos reales, un No-Tech con especificación clara puede acercarse al <strong>80%</strong> de un producto funcional. El problema es creer que ese 20% restante también se resuelve a punta de prompts.</div>
+        <p>Ese último tramo suele ser el más sensible: seguridad, estructura de datos, integraciones profundas, rendimiento, mantenibilidad. Ahí el seniority humano deja de ser opcional y se vuelve decisivo.</p>
+        <div class="callout gold">Mi trabajo como Tech Lead no es “arreglar lo que hizo la IA”. Es asegurar que la arquitectura soporte el peso real de la visión de negocio.</div>
 
         <h3>Fórmula simple de decisión</h3>
         <div class="formula">(Valor de tu hora) &gt; (Costo por hora del developer) → Deberías delegar</div>
@@ -1710,6 +1740,9 @@
           </table>
         </div>
 
+        <p>Esto no lo digo solo en abstracto. Cuando desarrollas producto de verdad, aprendes rápido que la inversión más valiosa no suele ser la función más vistosa, sino la estructura que sostiene los datos y el crecimiento. Me ha pasado con <strong>Xell</strong>: lo que más protege el negocio no es el feature que impresiona, sino la arquitectura que evita que todo se vuelva una pesadilla técnica después.</p>
+        <div class="callout neutral">Por eso en el Laboratorio IA insistimos tanto en invertir tiempo al inicio en estructura, especificación y criterios de datos. Lo llamativo vende una semana. La base correcta te deja escalar años.</div>
+
         <div class="callout gold">La métrica que de verdad importa en esta etapa: <strong>retorno sobre tiempo y atención</strong>, no solo sobre dinero.</div>
       </div>
     </div>
@@ -1804,6 +1837,10 @@
             </ul>
           </div>
         </div>
+
+        <h3>Paso 1.5: adopta una mentalidad de arquitecto</h3>
+        <p>Antes de escalar, pasa tu proyecto por un filtro simple de especificación. No te conformes con lo que “funciona a la primera”. Si hoy no puedes explicar con claridad qué hace tu sistema, qué datos usa y qué reglas sigue, mañana alguien va a tener que reconstruirlo desde cero.</p>
+        <div class="callout neutral">Documentar no es frenar el avance. Es dejar una base para que después un equipo senior pueda escalar lo que ya construiste sin borrar todo.</div>
 
         <h3>Paso 2: reconoce tu cuello de botella real</h3>
         <div class="table-wrap">
@@ -1907,12 +1944,15 @@
     <div class="author-card-inner">
       <div class="author-label">Sobre el autor</div>
       <div class="author-name">Juan Carlos Álvarez Lagos</div>
-      <p class="author-bio">Tech Lead en Praxis Studio LLC y creador de la marca <strong style="color:white">juanklagos Dev</strong>. Se especializa en arquitectura de software, desarrollo de productos digitales y construcción de sistemas que no solo funcionan hoy, sino que pueden sostener el crecimiento de mañana.</p>
-      <p class="author-bio" style="margin-top:1rem;">También impulsa una visión práctica sobre cómo emprendedores y equipos pueden usar inteligencia artificial con más criterio, estructura y claridad. Participa activamente en <strong style="color:white">Cúcuta Dev</strong>, apostando por una cultura de aprendizaje, tecnología y creación con propósito.</p>
+      <p class="author-bio">Juan Carlos Álvarez Lagos es Technical Lead en Praxis Studio LLC y el motor detrás de <strong style="color:var(--ink)">juanklagos Dev</strong>. Se dedica a arquitectura de software, desarrollo de productos digitales y construcción de sistemas pensados para escalar de verdad.</p>
+      <p class="author-bio" style="margin-top:1rem;">A través del Laboratorio IA, ha acompañado a profesionales y fundadores en el uso estratégico de inteligencia artificial bajo la metodología <strong style="color:var(--ink)">Spec-Driven Development (SDD)</strong>, ayudándoles a convertir ideas ambiguas en sistemas más claros, útiles y sostenibles.</p>
+      <p class="author-bio" style="margin-top:1rem;">También es un líder activo en <strong style="color:var(--ink)">Cúcuta Dev</strong>, con una misión muy concreta: empoderar a la región con tecnología de alto nivel y con una cultura de producto mejor diseñada.</p>
       <div class="author-tags">
         <span class="author-tag">Arquitectura de Software</span>
         <span class="author-tag">Productos Digitales</span>
         <span class="author-tag">IA con criterio</span>
+        <span class="author-tag">Spec-Driven Development</span>
+        <span class="author-tag">Praxis Studio</span>
         <span class="author-tag">Cúcuta Dev</span>
         <span class="author-tag">juanklagos.dev</span>
       </div>
