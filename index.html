@@ -1,0 +1,1941 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Solo con IA (…hasta cierto punto) — juanklagos.dev</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #1a1714;
+    --paper: #f7f4ef;
+    --paper-warm: #ede9e1;
+    --accent: #c0392b;
+    --accent-muted: #e8c5c0;
+    --gold: #b8941f;
+    --gold-light: #f0e4b0;
+    --muted: #7a7068;
+    --rule: #d4cec4;
+    --sidebar-w: 280px;
+    --max-reading: 72ch;
+    --page-pad: 2.5rem;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Lora', Georgia, serif;
+    background: var(--paper);
+    color: var(--ink);
+    line-height: 1.85;
+    font-size: 18px;
+    font-weight: 400;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* ── SIDEBAR ── */
+  #sidebar {
+    position: fixed;
+    top: 0; left: 0;
+    width: var(--sidebar-w);
+    height: 100vh;
+    background: var(--ink);
+    color: var(--paper);
+    overflow-y: auto;
+    z-index: 100;
+    display: flex;
+    flex-direction: column;
+    transition: transform 0.3s ease;
+  }
+
+  .sidebar-brand {
+    padding: 2rem 1.5rem 1.5rem;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+  }
+
+  .sidebar-brand .brand-tag {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.65rem;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent);
+    display: block;
+    margin-bottom: 0.5rem;
+  }
+
+  .sidebar-brand .book-title {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 1rem;
+    font-weight: 700;
+    line-height: 1.3;
+    color: var(--paper);
+    display: block;
+  }
+
+  .sidebar-brand .book-subtitle {
+    font-size: 0.72rem;
+    color: rgba(255,255,255,0.45);
+    display: block;
+    margin-top: 0.4rem;
+    font-style: italic;
+    line-height: 1.4;
+  }
+
+  .sidebar-nav {
+    flex: 1;
+    padding: 1rem 0;
+    overflow-y: auto;
+  }
+
+  .nav-section {
+    padding: 0.25rem 0;
+  }
+
+  .nav-section-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.58rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.3);
+    padding: 0.5rem 1.5rem 0.25rem;
+  }
+
+  .nav-link {
+    display: block;
+    padding: 0.4rem 1.5rem;
+    font-size: 0.8rem;
+    color: rgba(255,255,255,0.65);
+    text-decoration: none;
+    transition: all 0.2s;
+    border-left: 2px solid transparent;
+    line-height: 1.4;
+  }
+
+  .nav-link:hover, .nav-link.active {
+    color: var(--paper);
+    background: rgba(255,255,255,0.05);
+    border-left-color: var(--accent);
+  }
+
+  .nav-link .ch-num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.65rem;
+    color: rgba(255,255,255,0.3);
+    display: block;
+  }
+
+  .sidebar-footer {
+    padding: 1.25rem 1.5rem;
+    border-top: 1px solid rgba(255,255,255,0.1);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.65rem;
+    color: rgba(255,255,255,0.3);
+    text-align: center;
+  }
+
+  .sidebar-footer a {
+    color: var(--accent);
+    text-decoration: none;
+  }
+
+  /* ── MAIN ── */
+  #main {
+    margin-left: var(--sidebar-w);
+    min-height: 100vh;
+  }
+
+  /* ── TOP BAR ── */
+  #topbar {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    background: rgba(247,244,239,0.92);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--rule);
+    padding: 0.75rem var(--page-pad);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+
+  .topbar-current {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.68rem;
+    letter-spacing: 0.08em;
+    color: var(--muted);
+    text-transform: uppercase;
+  }
+
+  .topbar-brand {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    color: var(--accent);
+    font-weight: 600;
+    letter-spacing: 0.04em;
+  }
+
+  #menu-toggle {
+    display: none;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--ink);
+    padding: 0.25rem;
+  }
+
+  /* ── COVER PAGE ── */
+  .cover {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 5rem var(--page-pad) 4rem;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .cover::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: 
+      repeating-linear-gradient(0deg, transparent, transparent 39px, var(--rule) 39px, var(--rule) 40px),
+      repeating-linear-gradient(90deg, transparent, transparent 39px, rgba(212,206,196,0.3) 39px, rgba(212,206,196,0.3) 40px);
+    opacity: 0.4;
+    pointer-events: none;
+  }
+
+  .cover-inner {
+    position: relative;
+    max-width: 820px;
+  }
+
+  .cover-eyebrow {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.72rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 2rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .cover-eyebrow::after {
+    content: '';
+    display: block;
+    height: 1px;
+    width: 60px;
+    background: var(--accent);
+  }
+
+  .cover-title {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: clamp(2.8rem, 6vw, 5rem);
+    font-weight: 700;
+    line-height: 1.05;
+    color: var(--ink);
+    margin-bottom: 1.25rem;
+    letter-spacing: -0.02em;
+  }
+
+  .cover-title em {
+    font-style: italic;
+    color: var(--muted);
+  }
+
+  .cover-subtitle {
+    font-size: 1.05rem;
+    color: var(--muted);
+    max-width: 55ch;
+    margin-bottom: 3rem;
+    line-height: 1.7;
+  }
+
+  .cover-meta {
+    display: flex;
+    align-items: center;
+    gap: 2.5rem;
+    flex-wrap: wrap;
+  }
+
+  .cover-author {
+    font-size: 0.9rem;
+    color: var(--ink);
+  }
+
+  .cover-author span {
+    display: block;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 0.2rem;
+  }
+
+  .cover-author strong {
+    font-weight: 600;
+    font-size: 1rem;
+  }
+
+  .cover-chapters {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    color: var(--muted);
+    padding: 0.75rem 1.25rem;
+    border: 1px solid var(--rule);
+    background: var(--paper-warm);
+  }
+
+  .cover-chapters strong {
+    display: block;
+    font-size: 1.4rem;
+    font-family: 'Playfair Display', serif;
+    color: var(--ink);
+    font-weight: 700;
+  }
+
+  .cover-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: var(--accent);
+    color: white;
+    padding: 0.85rem 2rem;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.75rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    text-decoration: none;
+    transition: background 0.2s;
+    font-weight: 600;
+  }
+
+  .cover-cta:hover { background: #a93226; }
+
+  /* ── SECTIONS / CHAPTERS ── */
+  .section {
+    padding: 5rem var(--page-pad);
+    border-bottom: 1px solid var(--rule);
+  }
+
+  .section:nth-child(even) {
+    background: var(--paper-warm);
+  }
+
+  .section-inner {
+    max-width: var(--max-reading);
+  }
+
+  .chapter-header {
+    margin-bottom: 3.5rem;
+  }
+
+  .chapter-number {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--accent);
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+  }
+
+  .chapter-number::before {
+    content: '';
+    display: block;
+    height: 1px;
+    width: 32px;
+    background: var(--accent);
+  }
+
+  .chapter-title {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: clamp(1.9rem, 4vw, 2.8rem);
+    font-weight: 700;
+    line-height: 1.15;
+    letter-spacing: -0.02em;
+    margin-bottom: 0.75rem;
+  }
+
+  .chapter-subtitle {
+    font-size: 1rem;
+    color: var(--muted);
+    font-style: italic;
+  }
+
+  /* ── READING CONTENT ── */
+  .content h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(1.2rem, 3.5vw, 1.4rem);
+    font-weight: 700;
+    margin: 2.75rem 0 0.9rem;
+    line-height: 1.28;
+    color: var(--ink);
+  }
+
+  .content h4 {
+    font-family: 'Lora', serif;
+    font-size: 1.05rem;
+    font-weight: 600;
+    margin: 2rem 0 0.75rem;
+    color: var(--ink);
+    text-transform: none;
+    letter-spacing: 0;
+  }
+
+  .content p {
+    margin-bottom: 1.35rem;
+    color: var(--ink);
+    font-size: 1rem;
+    line-height: 1.85;
+  }
+
+  .content ul, .content ol {
+    margin: 1rem 0 1.5rem 1.5rem;
+  }
+
+  .content li {
+    margin-bottom: 0.6rem;
+    color: var(--ink);
+    line-height: 1.75;
+  }
+
+  .content strong {
+    font-weight: 600;
+  }
+
+  /* ── CALLOUTS ── */
+  .callout {
+    margin: 2rem 0;
+    padding: 1.25rem 1.5rem 1.25rem 1.75rem;
+    border-left: 3px solid var(--accent);
+    background: rgba(192, 57, 43, 0.05);
+    font-size: 1.05rem;
+    font-weight: 400;
+    color: var(--ink);
+    line-height: 1.7;
+  }
+
+  .callout.gold {
+    border-left-color: var(--gold);
+    background: rgba(184, 148, 31, 0.07);
+  }
+
+  .callout.neutral {
+    border-left-color: var(--rule);
+    background: var(--paper-warm);
+    color: var(--muted);
+  }
+
+  /* ── TABLES ── */
+  .table-wrap {
+    overflow-x: auto;
+    margin: 2rem 0;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9rem;
+    background: white;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+  }
+
+  thead {
+    background: var(--ink);
+    color: var(--paper);
+  }
+
+  thead th {
+    padding: 0.85rem 1.1rem;
+    text-align: left;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    font-weight: 600;
+  }
+
+  tbody td {
+    padding: 0.8rem 1.1rem;
+    border-bottom: 1px solid var(--rule);
+    vertical-align: top;
+    line-height: 1.5;
+  }
+
+  tbody tr:last-child td { border-bottom: none; }
+  tbody tr:hover { background: var(--paper-warm); }
+
+  td:first-child { font-weight: 400; }
+
+  .td-ia { color: var(--accent); font-weight: 600; }
+  .td-human { color: #1a6b3c; font-weight: 600; }
+  .td-you { color: var(--gold); font-weight: 600; }
+
+  /* ── SIGNAL BOXES ── */
+  .signal-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin: 1.5rem 0;
+  }
+
+  .signal-box {
+    padding: 1.25rem;
+    border: 1px solid var(--rule);
+    background: white;
+  }
+
+  .signal-box.green { border-top: 3px solid #1a6b3c; }
+  .signal-box.red { border-top: 3px solid var(--accent); }
+
+  .signal-box-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.62rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    margin-bottom: 0.5rem;
+  }
+  .signal-box.green .signal-box-label { color: #1a6b3c; }
+  .signal-box.red .signal-box-label { color: var(--accent); }
+
+  .signal-box ul { margin: 0; padding-left: 1rem; }
+  .signal-box li { font-size: 0.88rem; margin-bottom: 0.3rem; }
+
+  /* ── STACK LIST ── */
+  .stack-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 0.75rem;
+    margin: 1.5rem 0;
+  }
+
+  .stack-item {
+    background: var(--ink);
+    color: var(--paper);
+    padding: 1rem;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.78rem;
+  }
+
+  .stack-item span {
+    display: block;
+    font-size: 0.6rem;
+    color: rgba(255,255,255,0.4);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 0.3rem;
+  }
+
+  /* ── PILLARS ── */
+  .pillars {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0;
+    margin: 2rem 0;
+    border: 1px solid var(--rule);
+  }
+
+  .pillar {
+    padding: 1.5rem;
+    border-right: 1px solid var(--rule);
+    background: white;
+  }
+
+  .pillar:last-child { border-right: none; }
+
+  .pillar-num {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: var(--accent-muted);
+    line-height: 1;
+    margin-bottom: 0.5rem;
+  }
+
+  .pillar-title {
+    font-weight: 600;
+    font-size: 0.95rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .pillar-desc {
+    font-size: 0.85rem;
+    color: var(--muted);
+  }
+
+  /* ── PHASES ── */
+  .phases {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0;
+    margin: 2rem 0;
+  }
+
+  .phase {
+    padding: 1.5rem;
+    position: relative;
+  }
+
+  .phase:nth-child(1) { background: #f0e4b0; }
+  .phase:nth-child(2) { background: #e0eed4; }
+  .phase:nth-child(3) { background: #e8d4d4; }
+
+  .phase-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.62rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--ink);
+    opacity: 0.6;
+    margin-bottom: 0.5rem;
+  }
+
+  .phase-title { font-weight: 700; font-size: 1.1rem; margin-bottom: 0.75rem; }
+  .phase ul { padding-left: 1rem; font-size: 0.88rem; }
+  .phase li { margin-bottom: 0.3rem; }
+
+  /* ── CHECKLIST ── */
+  .checklist {
+    margin: 1.5rem 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .check-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    padding: 0.75rem 1rem;
+    background: white;
+    border: 1px solid var(--rule);
+    font-size: 0.92rem;
+  }
+
+  .check-item::before {
+    content: '→';
+    font-family: 'JetBrains Mono', monospace;
+    color: var(--accent);
+    font-size: 0.85rem;
+    flex-shrink: 0;
+    margin-top: 0.05rem;
+  }
+
+  /* ── QUOTE / INSIGHT ── */
+  .insight {
+    margin: 2.5rem 0;
+    padding: 0;
+    background: transparent;
+    position: relative;
+  }
+
+  .insight::before {
+    content: '\201C';
+    font-family: 'Playfair Display', serif;
+    font-size: 4.5rem;
+    color: var(--accent-muted);
+    display: block;
+    line-height: 1;
+    margin-bottom: -0.75rem;
+    pointer-events: none;
+  }
+
+  .insight-inner {
+    background: #fff8f0;
+    border-left: 4px solid var(--accent);
+    border-bottom: 1px solid var(--accent-muted);
+    padding: 1.5rem 2rem 1.5rem 1.75rem;
+  }
+
+  .insight-text {
+    font-family: 'Lora', Georgia, serif;
+    font-size: 1.15rem;
+    font-style: italic;
+    font-weight: 500;
+    line-height: 1.75;
+    color: var(--ink);
+  }
+
+  .insight-attr {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.65rem;
+    color: var(--muted);
+    margin-top: 0.85rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  /* ── FORMULA ── */
+  .formula {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 1rem;
+    text-align: center;
+    padding: 1.5rem;
+    background: var(--paper-warm);
+    border: 1px solid var(--rule);
+    margin: 1.5rem 0;
+    color: var(--ink);
+  }
+
+  /* ── STATS ── */
+  .stats-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 1px;
+    background: var(--rule);
+    border: 1px solid var(--rule);
+    margin: 2rem 0;
+  }
+
+  .stat {
+    background: white;
+    padding: 1.5rem;
+    text-align: center;
+  }
+
+  .stat-num {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: var(--accent);
+    line-height: 1;
+    display: block;
+  }
+
+  .stat-label {
+    font-size: 0.8rem;
+    color: var(--muted);
+    margin-top: 0.4rem;
+    line-height: 1.3;
+  }
+
+  /* ── TOC ── */
+  .toc-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 0;
+    border: 1px solid var(--rule);
+    margin: 2rem 0;
+  }
+
+  .toc-item {
+    display: flex;
+    gap: 1rem;
+    align-items: flex-start;
+    padding: 1rem 1.25rem;
+    border-bottom: 1px solid var(--rule);
+    text-decoration: none;
+    color: var(--ink);
+    transition: background 0.15s;
+  }
+
+  .toc-item:hover { background: var(--paper-warm); }
+
+  .toc-item:nth-child(odd) { border-right: 1px solid var(--rule); }
+
+  .toc-num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.65rem;
+    color: var(--accent);
+    font-weight: 600;
+    flex-shrink: 0;
+    margin-top: 0.2rem;
+  }
+
+  .toc-text { font-size: 0.88rem; line-height: 1.45; }
+
+  /* ── WATERMARK ── */
+  .watermark {
+    position: fixed;
+    bottom: 1.25rem;
+    right: 1.25rem;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.62rem;
+    letter-spacing: 0.08em;
+    color: rgba(26,23,20,0.2);
+    z-index: 200;
+    pointer-events: none;
+    text-align: right;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 0.1rem;
+  }
+
+  .watermark .wm-brand { color: rgba(192,57,43,0.35); font-weight: 600; }
+
+  /* ── PROGRESS BAR ── */
+  #progress-bar {
+    position: fixed;
+    top: 0;
+    left: var(--sidebar-w);
+    right: 0;
+    height: 2px;
+    background: var(--rule);
+    z-index: 300;
+  }
+
+  #progress-bar::after {
+    content: '';
+    display: block;
+    height: 100%;
+    background: var(--accent);
+    width: var(--progress, 0%);
+    transition: width 0.1s linear;
+  }
+
+  /* ── SECTION DIVIDER ── */
+  .section-rule {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin: 3rem 0 2rem;
+    color: var(--muted);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.6rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+  }
+
+  .section-rule::before, .section-rule::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--rule);
+  }
+
+  /* ── ACTION BOX ── */
+  .action-box {
+    background: var(--gold-light);
+    border: 1px solid var(--gold);
+    padding: 1.5rem;
+    margin: 2rem 0;
+  }
+
+  .action-box-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.62rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 0.75rem;
+    font-weight: 600;
+  }
+
+  .action-box p {
+    font-size: 0.95rem;
+    margin-bottom: 0;
+    color: var(--ink);
+  }
+
+  /* ── AUTHOR CARD ── */
+  .author-card {
+    background: var(--ink);
+    color: var(--paper);
+    padding: 3rem var(--page-pad);
+    margin-top: 0;
+  }
+
+  .author-card-inner {
+    max-width: var(--max-reading);
+  }
+
+  .author-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.3);
+    margin-bottom: 1rem;
+  }
+
+  .author-name {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.75rem;
+    font-weight: 700;
+    margin-bottom: 1.5rem;
+  }
+
+  .author-bio {
+    color: rgba(255,255,255,0.75);
+    font-size: 0.95rem;
+    line-height: 1.8;
+    max-width: 60ch;
+  }
+
+  .author-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 1.5rem;
+  }
+
+  .author-tag {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.08em;
+    padding: 0.35rem 0.75rem;
+    border: 1px solid rgba(255,255,255,0.2);
+    color: rgba(255,255,255,0.6);
+  }
+
+  /* ── SIDEBAR BACKDROP ── */
+  #sidebar-backdrop {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.45);
+    z-index: 90;
+    backdrop-filter: blur(2px);
+  }
+  #sidebar-backdrop.open { display: block; }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 900px) {
+    :root {
+      --sidebar-w: 0px;
+      --page-pad: 1.25rem;
+    }
+
+    #sidebar {
+      transform: translateX(-280px);
+      width: 280px;
+    }
+
+    #sidebar.open {
+      transform: translateX(0);
+      width: 280px;
+    }
+
+    #menu-toggle { display: flex; }
+
+    #main { margin-left: 0; }
+
+    #progress-bar { left: 0; }
+
+    .signal-grid { grid-template-columns: 1fr; }
+    .pillars { grid-template-columns: 1fr; }
+    .pillar { border-right: none; border-bottom: 1px solid var(--rule); }
+    .phases { grid-template-columns: 1fr; }
+
+    .section { padding: 3rem var(--page-pad); }
+    .cover { padding: 3.5rem var(--page-pad) 2.5rem; }
+
+    .cover-meta {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 1.25rem;
+    }
+
+    .cover-cta { width: 100%; justify-content: center; }
+
+    .insight { padding: 1.5rem 1.5rem 1.5rem 1.75rem; }
+    .insight-text { font-size: 1.1rem; }
+
+    .chapter-title { font-size: clamp(1.65rem, 6vw, 2.4rem); }
+
+    .stack-list { grid-template-columns: 1fr 1fr; }
+
+    /* Tables scroll nicely on mobile */
+    .table-wrap { -webkit-overflow-scrolling: touch; }
+    table { font-size: 0.83rem; }
+    thead th, tbody td { padding: 0.65rem 0.75rem; }
+  }
+
+  @media (max-width: 600px) {
+    body { font-size: 17px; }
+    .toc-grid { grid-template-columns: 1fr; }
+    .toc-item:nth-child(odd) { border-right: none; }
+    .stats-row { grid-template-columns: 1fr 1fr; }
+    .stack-list { grid-template-columns: 1fr; }
+    .cover-title { font-size: clamp(2.2rem, 9vw, 3rem); }
+    .section { padding: 2.5rem var(--page-pad); }
+  }
+</style>
+</head>
+<body>
+
+<!-- Progress bar -->
+<div id="progress-bar"></div>
+
+<!-- Sidebar backdrop (mobile) -->
+<div id="sidebar-backdrop" onclick="toggleMenu()"></div>
+
+<!-- Watermark -->
+<div class="watermark">
+  <span class="wm-brand">juanklagos.dev</span>
+  <span>© Juan Carlos Álvarez Lagos</span>
+</div>
+
+<!-- Sidebar -->
+<nav id="sidebar">
+  <div class="sidebar-brand">
+    <span class="brand-tag">juanklagos.dev</span>
+    <span class="book-title">Solo con IA<br>(…hasta cierto punto)</span>
+    <span class="book-subtitle">Qué puedes construir solo, cuándo necesitas ayuda y cómo evitar errores costosos</span>
+  </div>
+  <div class="sidebar-nav">
+    <div class="nav-section">
+      <div class="nav-section-label">Intro</div>
+      <a class="nav-link" href="#cover">Portada</a>
+      <a class="nav-link" href="#antes">Antes de empezar</a>
+      <a class="nav-link" href="#contenido">Contenido</a>
+    </div>
+    <div class="nav-section">
+      <div class="nav-section-label">Capítulos</div>
+      <a class="nav-link" href="#cap1"><span class="ch-num">Cap. 1</span>La revolución silenciosa</a>
+      <a class="nav-link" href="#cap2"><span class="ch-num">Cap. 2</span>La mentira del "todo con IA"</a>
+      <a class="nav-link" href="#cap3"><span class="ch-num">Cap. 3</span>Tu primer negocio con IA</a>
+      <a class="nav-link" href="#cap4"><span class="ch-num">Cap. 4</span>Tu primer equipo digital</a>
+      <a class="nav-link" href="#cap5"><span class="ch-num">Cap. 5</span>El muro invisible</a>
+      <a class="nav-link" href="#cap6"><span class="ch-num">Cap. 6</span>Cuándo necesitas un developer</a>
+      <a class="nav-link" href="#cap7"><span class="ch-num">Cap. 7</span>El costo real de hacerlo solo</a>
+      <a class="nav-link" href="#cap8"><span class="ch-num">Cap. 8</span>El factor humano</a>
+      <a class="nav-link" href="#cap9"><span class="ch-num">Cap. 9</span>Qué delegar y qué no</a>
+      <a class="nav-link" href="#cap10"><span class="ch-num">Cap. 10</span>Cómo invertir bien</a>
+      <a class="nav-link" href="#cap11"><span class="ch-num">Cap. 11</span>Tres escenarios reales</a>
+      <a class="nav-link" href="#cap12"><span class="ch-num">Cap. 12</span>Hoja de ruta práctica</a>
+    </div>
+    <div class="nav-section">
+      <div class="nav-section-label">Cierre</div>
+      <a class="nav-link" href="#conclusion">Conclusión</a>
+      <a class="nav-link" href="#autor">Sobre el autor</a>
+    </div>
+  </div>
+  <div class="sidebar-footer">
+    <a href="https://juanklagos.dev">juanklagos.dev</a> · 2026
+  </div>
+</nav>
+
+<!-- Main content -->
+<div id="main">
+
+  <!-- Top bar -->
+  <div id="topbar">
+    <div style="display:flex;align-items:center;gap:1rem;">
+      <button id="menu-toggle" aria-label="Abrir menú" onclick="toggleMenu()">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M2 5h16M2 10h16M2 15h16" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+      </button>
+      <span class="topbar-current" id="chapter-indicator">Portada</span>
+    </div>
+    <span class="topbar-brand">juanklagos.dev</span>
+  </div>
+
+  <!-- COVER -->
+  <section class="cover" id="cover">
+    <div class="cover-inner">
+      <p class="cover-eyebrow">Ebook · 2026</p>
+      <h1 class="cover-title">Solo con IA<br><em>(…hasta cierto punto)</em></h1>
+      <p class="cover-subtitle">Qué puedes construir solo, cuándo necesitas ayuda y cómo evitar errores costosos que frenan tu crecimiento.</p>
+      <div class="cover-meta">
+        <div class="cover-author">
+          <span>Autor</span>
+          <strong>Juan Carlos Álvarez Lagos</strong>
+        </div>
+        <div class="cover-chapters">
+          <strong>12</strong>
+          Capítulos
+        </div>
+        <a class="cover-cta" href="#antes">Empezar a leer →</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ANTES DE EMPEZAR -->
+  <section class="section" id="antes">
+    <div class="section-inner">
+      <div class="chapter-header">
+        <div class="chapter-number">Prólogo</div>
+        <h2 class="chapter-title">Antes de empezar</h2>
+      </div>
+      <div class="content">
+        <p>Este ebook está escrito para emprendedores que quieren usar inteligencia artificial con criterio.</p>
+        <p>No fue pensado para prometer atajos irreales, ni para empujarte a automatizar todo, ni para hacerte creer que ya no necesitas pensamiento estratégico.</p>
+        <p>Fue pensado para ayudarte a responder tres preguntas esenciales:</p>
+        <div class="callout">
+          <ul style="list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:0.5rem;">
+            <li>→ <strong>qué puedes hacer tú solo hoy</strong></li>
+            <li>→ <strong>qué puedes acelerar con IA</strong></li>
+            <li>→ <strong>cuándo conviene dejar de improvisar y traer ayuda especializada</strong></li>
+          </ul>
+        </div>
+        <p>Si estás entrando al mundo de la IA desde negocio, producto o servicios, este libro busca darte algo más útil que una lista de herramientas:</p>
+        <div class="callout gold">👉 <strong>Un marco para tomar mejores decisiones</strong></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTENIDO -->
+  <section class="section" id="contenido">
+    <div class="section-inner">
+      <div class="chapter-header">
+        <div class="chapter-number">Índice</div>
+        <h2 class="chapter-title">Contenido</h2>
+      </div>
+      <div class="toc-grid">
+        <a class="toc-item" href="#cap1"><span class="toc-num">01</span><span class="toc-text">La revolución silenciosa del solopreneur</span></a>
+        <a class="toc-item" href="#cap2"><span class="toc-num">02</span><span class="toc-text">La mentira del "puedes hacer todo con IA"</span></a>
+        <a class="toc-item" href="#cap3"><span class="toc-num">03</span><span class="toc-text">Tu primer negocio con IA</span></a>
+        <a class="toc-item" href="#cap4"><span class="toc-num">04</span><span class="toc-text">Tu primer equipo digital</span></a>
+        <a class="toc-item" href="#cap5"><span class="toc-num">05</span><span class="toc-text">El muro invisible: cuando la IA deja de ser suficiente</span></a>
+        <a class="toc-item" href="#cap6"><span class="toc-num">06</span><span class="toc-text">Cuándo necesitas un developer</span></a>
+        <a class="toc-item" href="#cap7"><span class="toc-num">07</span><span class="toc-text">El costo real de hacerlo todo tú</span></a>
+        <a class="toc-item" href="#cap8"><span class="toc-num">08</span><span class="toc-text">El factor humano: cómo no romperte mientras escalas</span></a>
+        <a class="toc-item" href="#cap9"><span class="toc-num">09</span><span class="toc-text">Qué delegar a la IA, qué a humanos y qué nunca soltar</span></a>
+        <a class="toc-item" href="#cap10"><span class="toc-num">10</span><span class="toc-text">Cómo invertir bien: qué pagar primero</span></a>
+        <a class="toc-item" href="#cap11"><span class="toc-num">11</span><span class="toc-text">Tres escenarios reales</span></a>
+        <a class="toc-item" href="#cap12"><span class="toc-num">12</span><span class="toc-text">Hoja de ruta práctica</span></a>
+      </div>
+    </div>
+  </section>
+
+  <!-- CAPÍTULO 1 -->
+  <section class="section" id="cap1">
+    <div class="section-inner">
+      <div class="chapter-header">
+        <div class="chapter-number">Capítulo 01</div>
+        <h2 class="chapter-title">La Revolución Silenciosa del Solopreneur</h2>
+        <p class="chapter-subtitle">Por qué empezar nunca fue tan fácil… ni tan peligroso</p>
+      </div>
+      <div class="content">
+        <p>En 2026, el problema ya no es la falta de herramientas. El problema es saber qué hacer con ellas… y cuándo dejar de hacerlo solo.</p>
+        <p>Hoy, cualquier emprendedor puede crear un producto con inteligencia artificial, automatizar tareas que antes requerían equipos completos, generar contenido en minutos y validar ideas sin invertir grandes cantidades de dinero. Nunca había sido tan fácil empezar.</p>
+        <div class="callout">👉 <strong>Nunca había sido tan fácil construir algo que no escala.</strong></div>
+        <p>Miles de solopreneurs están creando proyectos impulsados por IA que funcionan al inicio, pero colapsan cuando crecen. ¿Por qué? Porque están usando la IA como herramienta… cuando en realidad deberían usarla como sistema.</p>
+
+        <h3>El cambio real: de herramienta a sistema</h3>
+        <p>Durante años, la tecnología fue algo que "te ayudaba". Pero tú seguías siendo el centro de todo. En 2026, eso cambió. La IA dejó de ser un asistente y se convirtió en un motor de ejecución. Ya no solo responde preguntas. Ahora toma decisiones simples, ejecuta tareas completas, coordina procesos y aprende de contexto.</p>
+        <div class="callout gold">👉 Entramos en la era de la <strong>automatización cognitiva</strong></div>
+
+        <h3>La Superagencia</h3>
+        <p>La mayoría de las personas usa IA para hacer más rápido lo mismo. Pero los que realmente avanzan hacen algo distinto: <strong>diseñan sistemas donde la IA ejecuta por ellos.</strong></p>
+        <div class="insight">
+          <div class="insight-inner">
+            <p class="insight-text">Superagencia: la capacidad de amplificar tu impacto usando sistemas inteligentes que piensan, ejecutan y escalan contigo.</p>
+            <p class="insight-attr">— Solo con IA, Cap. 1</p>
+          </div>
+        </div>
+
+        <h3>¿Por qué esto importa ahora?</h3>
+        <div class="stats-row">
+          <div class="stat">
+            <span class="stat-num">92%</span>
+            <span class="stat-label">de las empresas invierte en IA</span>
+          </div>
+          <div class="stat">
+            <span class="stat-num">1%</span>
+            <span class="stat-label">ha alcanzado madurez real</span>
+          </div>
+          <div class="stat">
+            <span class="stat-num">90%</span>
+            <span class="stat-label">reducción de costos posible</span>
+          </div>
+          <div class="stat">
+            <span class="stat-num">+50%</span>
+            <span class="stat-label">aumento en productividad</span>
+          </div>
+        </div>
+        <p>Pero hay un matiz importante: tiene que estar bien diseñada.</p>
+
+        <h3>Los 3 pilares de la Superagencia</h3>
+        <div class="pillars">
+          <div class="pillar">
+            <div class="pillar-num">01</div>
+            <div class="pillar-title">Capacidad</div>
+            <div class="pillar-desc">Tu fuerza de ejecución aumentada. Haces más sin necesitar más personas.</div>
+          </div>
+          <div class="pillar">
+            <div class="pillar-num">02</div>
+            <div class="pillar-title">Creatividad</div>
+            <div class="pillar-desc">Explorar ideas y escenarios que antes requerían equipos completos.</div>
+          </div>
+          <div class="pillar">
+            <div class="pillar-num">03</div>
+            <div class="pillar-title">Impacto</div>
+            <div class="pillar-desc">Escalar resultados sin construir una estructura pesada.</div>
+          </div>
+        </div>
+
+        <div class="action-box">
+          <div class="action-box-label">⏱ Acción de 5 minutos</div>
+          <p>Escribe en una nota esta pregunta: <strong>¿Cuál es la tarea que más tiempo te quita hoy y cómo se vería si la IA la hiciera por ti?</strong></p>
+        </div>
+
+        <div class="callout neutral">La tecnología te da velocidad. El criterio te da dirección.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CAPÍTULO 2 -->
+  <section class="section" id="cap2">
+    <div class="section-inner">
+      <div class="chapter-header">
+        <div class="chapter-number">Capítulo 02</div>
+        <h2 class="chapter-title">La mentira del "puedes hacer todo con IA"</h2>
+        <p class="chapter-subtitle">Por qué el problema no es la herramienta, sino la interpretación</p>
+      </div>
+      <div class="content">
+        <p>En 2026, hay una narrativa constante: "No necesitas programar", "Puedes construir todo con IA". Pero esto es incompleto.</p>
+        <div class="callout">👉 Puedes hacer mucho… <strong>pero no todo bien.</strong></div>
+
+        <h3>Lo que SÍ puedes hacer con IA — y lo que NO</h3>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr><th>✅ Lo que SÍ puedes hacer</th><th>❌ Lo que NO puedes hacer bien</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>Validar ideas de negocio</td><td>Diseñar sistemas complejos</td></tr>
+              <tr><td>Crear MVPs funcionales</td><td>Arquitectura escalable real</td></tr>
+              <tr><td>Automatizar tareas repetitivas</td><td>Decisiones técnicas profundas</td></tr>
+              <tr><td>Generar y mejorar contenido</td><td>Garantizar estabilidad a largo plazo</td></tr>
+              <tr><td>Responder preguntas frecuentes</td><td>Reemplazar juicio estratégico</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3>Construir vs. Diseñar</h3>
+        <div class="signal-grid">
+          <div class="signal-box green">
+            <div class="signal-box-label">✅ Construir</div>
+            <ul><li>Funciona hoy</li><li>Resuelve el problema inmediato</li><li>La IA lo puede hacer</li></ul>
+          </div>
+          <div class="signal-box red">
+            <div class="signal-box-label">⚠ Diseñar sistemas</div>
+            <ul><li>Funciona y escala</li><li>Se puede mantener y evolucionar</li><li>Requiere criterio humano</li></ul>
+          </div>
+        </div>
+
+        <p>Una cosa es generar algo que corre. Otra muy distinta es definir una estructura que pueda mantenerse, entenderse y evolucionar bien con el tiempo. Por eso metodologías como el <strong>Spec-Driven Development (SDD)</strong> se vuelven valiosas: primero se define con claridad qué problema se resuelve, cómo debería comportarse el sistema y qué límites debe tener… y después se implementa.</p>
+
+        <div class="callout">👉 La velocidad sin especificación produce fragilidad. La claridad antes de ejecutar produce sistemas más sostenibles.</div>
+
+        <h3>Nueva regla del solopreneur inteligente</h3>
+        <div class="checklist">
+          <div class="check-item">Empieza solo con IA</div>
+          <div class="check-item">Escala con sistemas bien diseñados</div>
+          <div class="check-item">Integra humanos en el momento correcto</div>
+        </div>
+
+        <div class="callout neutral">La IA es poder. Bien usada, multiplica. Mal usada, frena.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CAPÍTULO 3 -->
+  <section class="section" id="cap3">
+    <div class="section-inner">
+      <div class="chapter-header">
+        <div class="chapter-number">Capítulo 03</div>
+        <h2 class="chapter-title">Tu primer negocio con IA</h2>
+        <p class="chapter-subtitle">Qué puedes construir hoy, sin saber programar</p>
+      </div>
+      <div class="content">
+        <p>La pregunta clave: <strong>¿Qué puedo construir yo solo?</strong> La respuesta: un negocio funcional y validado. No necesitas una app compleja ni un sistema perfecto. Solo necesitas validar.</p>
+
+        <h3>Stack mínimo para empezar</h3>
+        <div class="stack-list">
+          <div class="stack-item"><span>IA</span>ChatGPT / Claude</div>
+          <div class="stack-item"><span>Constructor</span>Webflow / Notion</div>
+          <div class="stack-item"><span>Automatización</span>Zapier / Make</div>
+          <div class="stack-item"><span>Canal</span>WhatsApp / Email</div>
+        </div>
+
+        <h3>Ejemplo real: Servicio de CV con IA</h3>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Paso</th><th>Herramienta</th><th>Qué pasa</th></tr></thead>
+            <tbody>
+              <tr><td>1. Landing page</td><td>Webflow / Notion</td><td>El usuario llega y entiende la oferta</td></tr>
+              <tr><td>2. Formulario</td><td>Typeform / Tally</td><td>El usuario sube su CV actual</td></tr>
+              <tr><td>3. Procesamiento IA</td><td>ChatGPT / Claude</td><td>La IA mejora y redacta el CV</td></tr>
+              <tr><td>4. Entrega</td><td>Email / WhatsApp</td><td>El cliente recibe su CV mejorado</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="callout gold">👉 Ya tienes un negocio funcionando.</div>
+
+        <h3>La automatización cognitiva va un paso más allá</h3>
+        <p>La automatización tradicional mueve datos: si llega un correo, guárdalo. Si alguien llena un formulario, envía una notificación. La automatización cognitiva agrega criterio: si llega un correo, analízalo con IA, clasifica si el lead tiene presupuesto real y responde con una propuesta base adaptada al contexto.</p>
+
+        <h3>Regla del 80%</h3>
+        <div class="callout">No necesitas perfección. Necesitas algo que funcione y te permita aprender qué quiere realmente el usuario.</div>
+
+        <div class="signal-grid">
+          <div class="signal-box green">
+            <div class="signal-box-label">✅ Valor de empezar solo</div>
+            <ul><li>Claridad sobre el problema real</li><li>Validación rápida y barata</li><li>Aprendes qué automatizar</li></ul>
+          </div>
+          <div class="signal-box red">
+            <div class="signal-box-label">🚩 Señal de límite</div>
+            <ul><li>Todo se rompe cuando creces</li><li>Todo depende de ti</li><li>No puedes escalar sin ti</li></ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CAPÍTULO 4 -->
+  <section class="section" id="cap4">
+    <div class="section-inner">
+      <div class="chapter-header">
+        <div class="chapter-number">Capítulo 04</div>
+        <h2 class="chapter-title">Tu primer equipo digital</h2>
+        <p class="chapter-subtitle">Cómo pasar de hacer tareas… a dirigir sistemas</p>
+      </div>
+      <div class="content">
+        <p>Hasta ahora eres el que hace todo. El siguiente nivel es dejar de ser el que ejecuta… y empezar a ser el que dirige.</p>
+
+        <h3>El cambio mental más importante</h3>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Antes</th><th>Ahora</th></tr></thead>
+            <tbody>
+              <tr><td>"Ayúdame a hacer esto"</td><td>"Encárgate de esto"</td></tr>
+              <tr><td>Herramienta puntual</td><td>Rol con responsabilidad</td></tr>
+              <tr><td>Ejecutas tú</td><td>Supervisas tú</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3>Los 4 roles básicos de tu equipo digital</h3>
+        <div class="pillars">
+          <div class="pillar"><div class="pillar-num">01</div><div class="pillar-title">Agente de contenido</div><div class="pillar-desc">Crea borradores, posts y materiales de comunicación.</div></div>
+          <div class="pillar"><div class="pillar-num">02</div><div class="pillar-title">Agente de marketing</div><div class="pillar-desc">Optimiza mensajes, prueba textos, gestiona respuestas frecuentes.</div></div>
+          <div class="pillar"><div class="pillar-num">03</div><div class="pillar-title">Agente de operaciones</div><div class="pillar-desc">Ejecuta procesos, organiza entradas, coordina flujos.</div></div>
+          <div class="pillar"><div class="pillar-num">04</div><div class="pillar-title">Agente de análisis</div><div class="pillar-desc">Detecta mejoras, resume datos, identifica patrones.</div></div>
+        </div>
+
+        <h3>Cómo construirlo paso a paso</h3>
+        <div class="checklist">
+          <div class="check-item">Identifica las 3 tareas que más tiempo te consumen</div>
+          <div class="check-item">Agrúpalas en un rol claro (contenido, operaciones, etc.)</div>
+          <div class="check-item">Asigna ese rol a un agente o flujo de IA</div>
+          <div class="check-item">Diseña el flujo de entrada → proceso → salida</div>
+          <div class="check-item">Automatiza poco a poco, con supervisión</div>
+        </div>
+
+        <div class="signal-grid">
+          <div class="signal-box green">
+            <div class="signal-box-label">✅ Señal de que va bien</div>
+            <ul><li>El sistema funciona sin que estés presente</li><li>Solo intervenes para decisiones importantes</li></ul>
+          </div>
+          <div class="signal-box red">
+            <div class="signal-box-label">🚩 Señal de problema</div>
+            <ul><li>Todo depende de ti directamente</li><li>Cuando creces, hay fallos e inconsistencias</li></ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CAPÍTULO 5 -->
+  <section class="section" id="cap5">
+    <div class="section-inner">
+      <div class="chapter-header">
+        <div class="chapter-number">Capítulo 05</div>
+        <h2 class="chapter-title">El muro invisible</h2>
+        <p class="chapter-subtitle">Cuando la IA deja de ser suficiente</p>
+      </div>
+      <div class="content">
+        <p>Tienes un sistema. Tienes automatización. Tienes flujo. Y por un momento sientes que "esto escala". Pero luego empiezan a aparecer problemas. No grandes, no evidentes. Pero constantes.</p>
+
+        <h3>El síntoma principal</h3>
+        <div class="callout">👉 Si estás pasando más tiempo <strong>revisando</strong> que construyendo, estás en el muro.</div>
+
+        <h3>Qué es la deuda técnica (explicado simple)</h3>
+        <p>Es el costo de decisiones rápidas que no fueron pensadas a largo plazo.</p>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Señal</th><th>Qué significa</th></tr></thead>
+            <tbody>
+              <tr><td>Automatización improvisada</td><td>Funciona hoy, falla mañana</td></tr>
+              <tr><td>Código generado sin contexto</td><td>Nadie sabe por qué existe</td></tr>
+              <tr><td>Integraciones frágiles</td><td>Un cambio rompe todo</td></tr>
+              <tr><td>Falta de documentación</td><td>El sistema vive solo en tu cabeza</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3>🚩 5 señales de que tu sistema es un castillo de naipes</h3>
+        <div class="checklist">
+          <div class="check-item"><strong>Efecto dominó:</strong> arreglas algo y se rompe otra parte sin causa evidente</div>
+          <div class="check-item"><strong>Script de caja negra:</strong> hay partes que funcionan pero no sabes cómo sostenerlas</div>
+          <div class="check-item"><strong>Miedo al cambio:</strong> postergas mejoras porque tocar el sistema se siente riesgoso</div>
+          <div class="check-item"><strong>Validación manual eterna:</strong> revisas todo una y otra vez porque no confías en los resultados</div>
+          <div class="check-item"><strong>Falta de especificación:</strong> no hay documentación; el sistema vive en prompts y parches sueltos</div>
+        </div>
+        <div class="callout">Cuando se acumulan varias de estas señales, el problema ya no es de productividad. <strong>Es de estructura.</strong></div>
+
+        <h3>La verdad incómoda</h3>
+        <p>La IA no sabe diseñar sistemas complejos a largo plazo. Puede ayudarte a construir. Pero no puede ver toda la arquitectura, tomar decisiones estructurales profundas ni garantizar estabilidad a escala.</p>
+        <div class="callout gold">El verdadero cuello de botella no es la tecnología. Eres tú… sin soporte especializado.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CAPÍTULO 6 -->
+  <section class="section" id="cap6">
+    <div class="section-inner">
+      <div class="chapter-header">
+        <div class="chapter-number">Capítulo 06</div>
+        <h2 class="chapter-title">Cuándo necesitas un developer</h2>
+        <p class="chapter-subtitle">La decisión que define si escalas… o te estancas</p>
+      </div>
+      <div class="content">
+        <p>No contratas por volumen de trabajo. Contratas por complejidad estructural. Y lo que realmente compras al contratar alguien senior no es código: es <strong>juicio técnico</strong>. La capacidad de ver riesgos antes de que exploten.</p>
+
+        <h3>Las 3 señales claras de que necesitas un developer</h3>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>#</th><th>Señal</th><th>Qué está pasando</th></tr></thead>
+            <tbody>
+              <tr><td>1</td><td>Arreglas más de lo que construyes</td><td>Bugs constantes, flujos que se rompen, mantenimiento consume todo</td></tr>
+              <tr><td>2</td><td>Tu sistema depende de "hacks"</td><td>Integraciones frágiles, automatizaciones encadenadas sin control</td></tr>
+              <tr><td>3</td><td>No puedes crecer sin romper algo</td><td>Más usuarios = más errores; más features = más caos</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3>Qué tipo de developer necesitas</h3>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Perfil</th><th>Para qué sirve</th><th>¿Cuándo contratarlo?</th></tr></thead>
+            <tbody>
+              <tr><td><strong>Backend / Arquitecto</strong></td><td>Estructura y escalabilidad</td><td>Cuando el sistema necesita bases sólidas</td></tr>
+              <tr><td><strong>Fullstack</strong></td><td>Ejecución + soporte técnico</td><td>Cuando necesitas avanzar en producto</td></tr>
+              <tr><td><strong>MLOps / AI Engineer</strong></td><td>Sistemas de IA más avanzados</td><td>Cuando la IA es parte central del producto</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3>🛠 Preguntas clave para tu primer senior developer</h3>
+        <div class="checklist">
+          <div class="check-item">"Si este sistema escala a 1,000 usuarios mañana, ¿qué es lo primero que va a explotar?"</div>
+          <div class="check-item">"¿Cómo documentarías esta estructura para que otro humano —o una IA— pueda mantenerla sin depender de ti?"</div>
+          <div class="check-item">"Dame una razón por la que NO deberíamos usar esta herramienta que hoy construimos con IA."</div>
+        </div>
+        <div class="callout neutral">Las mejores respuestas no suenan impresionantes. Suenan claras, sobrias y realistas.</div>
+
+        <h3>Fórmula simple de decisión</h3>
+        <div class="formula">(Valor de tu hora) &gt; (Costo por hora del developer) → Deberías delegar</div>
+
+        <h3>Cuándo NO contratar todavía</h3>
+        <div class="callout">No contrates si aún no tienes validación, flujo claro, o si aún no entiendes tu propio sistema. <strong>Estarías delegando confusión.</strong></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CAPÍTULO 7 -->
+  <section class="section" id="cap7">
+    <div class="section-inner">
+      <div class="chapter-header">
+        <div class="chapter-number">Capítulo 07</div>
+        <h2 class="chapter-title">El costo real de hacerlo todo tú</h2>
+        <p class="chapter-subtitle">Por qué "seguir solo" deja de ser gratis</p>
+      </div>
+      <div class="content">
+        <p>Hacer todo tú mismo tiene sentido al inicio: aprendes rápido, ahorras dinero, tienes control total. Pero hay un momento donde eso cambia. Y el cambio no es evidente: es silencioso, pero costoso.</p>
+
+        <h3>Los tres tipos de costos invisibles</h3>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Tipo de costo</th><th>Qué significa</th><th>Impacto real</th></tr></thead>
+            <tbody>
+              <tr><td><strong>Costo de tiempo</strong></td><td>Horas en tareas que no generan valor directo</td><td>Dejas de vender, crear oportunidades, pensar estrategia</td></tr>
+              <tr><td><strong>Costo de enfoque</strong></td><td>Cambios constantes de contexto</td><td>Menos claridad, peores decisiones, más errores</td></tr>
+              <tr><td><strong>Costo de crecimiento</strong></td><td>No puedes escalar al ritmo posible</td><td>Competidores con sistemas mejores te adelantan</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3>Dos escenarios: el que ahorra vs. el que crece</h3>
+        <div class="signal-grid">
+          <div class="signal-box red">
+            <div class="signal-box-label">Escenario A: haces todo tú</div>
+            <ul><li>Ahorras dinero hoy</li><li>Creces lento</li><li>Tu tiempo se va en técnico</li><li>El crecimiento está bloqueado</li></ul>
+          </div>
+          <div class="signal-box green">
+            <div class="signal-box-label">Escenario B: delegas lo técnico</div>
+            <ul><li>Inviertes dinero</li><li>Liberas tiempo para ventas</li><li>Creces más rápido</li><li>El segundo gana a mediano plazo</li></ul>
+          </div>
+        </div>
+
+        <div class="callout gold">La pregunta correcta no es "¿cuánto cuesta contratar?" sino <strong>"¿cuánto me cuesta NO contratar?"</strong></div>
+
+        <h3>Regla práctica para delegar</h3>
+        <p>Si una tarea no requiere tu criterio estratégico, consume mucho tiempo, y puede ser sistematizada o delegada → no deberías estar haciéndola tú.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- CAPÍTULO 8 -->
+  <section class="section" id="cap8">
+    <div class="section-inner">
+      <div class="chapter-header">
+        <div class="chapter-number">Capítulo 08</div>
+        <h2 class="chapter-title">El factor humano</h2>
+        <p class="chapter-subtitle">Las 3 alarmas del burnout del fundador en la era de la IA</p>
+      </div>
+      <div class="content">
+        <p>La mayoría de conversaciones sobre IA hablan de productividad, velocidad y eficiencia. Casi nadie habla del verdadero cuello de botella: <strong>tu sistema nervioso</strong>. Aunque la tecnología acelera todo, tu cuerpo sigue teniendo límites.</p>
+
+        <div class="callout">La IA mal usada hace lo contrario de liberarte: multiplica decisiones, aumenta el cambio de contexto y te mantiene siempre "encendido".</div>
+
+        <h3>Las 3 alarmas que no debes ignorar</h3>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Alarma</th><th>Cómo se siente</th><th>Qué hacer</th></tr></thead>
+            <tbody>
+              <tr>
+                <td><strong>1. Aplanamiento emocional</strong></td>
+                <td>Un logro ya no entusiasma. Un problema ya no activa. Todo se siente plano.</td>
+                <td>Check-in semanal de energía. Reduce estímulos. Recupera actividades reguladoras: caminar, leer, silencio.</td>
+              </tr>
+              <tr>
+                <td><strong>2. Desorden cognitivo</strong></td>
+                <td>Demasiadas pestañas, herramientas, decisiones pendientes. Ocupado pero sin foco.</td>
+                <td>Elimina herramientas duplicadas. Define reglas por defecto. Una sola fuente de verdad para tareas.</td>
+              </tr>
+              <tr>
+                <td><strong>3. Agotamiento físico</strong></td>
+                <td>Duermes pero no recuperas. Energía base baja. Todo requiere más esfuerzo del normal.</td>
+                <td>Protege horario de sueño. Reduce trabajo reactivo nocturno. Aplica la regla del 80%.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="insight">
+          <div class="insight-inner">
+            <p class="insight-text">No automatices solo para ganar velocidad. Automatiza para proteger energía cognitiva. Esa diferencia cambia todo.</p>
+            <p class="insight-attr">— Solo con IA, Cap. 8</p>
+          </div>
+        </div>
+
+        <p>La IA puede darte velocidad. Pero no puede darte sistema nervioso, descanso ni criterio. Eso sigue siendo humano. Y en esta etapa, si tú te rompes: el sistema también se rompe.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- CAPÍTULO 9 -->
+  <section class="section" id="cap9">
+    <div class="section-inner">
+      <div class="chapter-header">
+        <div class="chapter-number">Capítulo 09</div>
+        <h2 class="chapter-title">Qué delegar a la IA, qué a humanos y qué nunca soltar</h2>
+        <p class="chapter-subtitle">La matriz de decisión para escalar con criterio</p>
+      </div>
+      <div class="content">
+        <p>En un negocio sano hay tres niveles: lo que automatizas, lo que supervisas, y lo que decides personalmente. Escalar bien no es soltar todo. Es soltar con criterio.</p>
+
+        <h3>La matriz de delegación</h3>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr><th>Nivel de tarea</th><th>¿Quién lo hace mejor?</th><th>Razón principal</th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Borradores, resúmenes, clasificación de datos, respuestas frecuentes</td>
+                <td class="td-ia">IA</td>
+                <td>Alta velocidad y bajo costo de error</td>
+              </tr>
+              <tr>
+                <td>Arquitectura, legal, UX compleja, negociación, decisiones sensibles</td>
+                <td class="td-human">Humano especializado</td>
+                <td>Requiere contexto, responsabilidad y criterio real</td>
+              </tr>
+              <tr>
+                <td>Visión, propuesta de valor, prioridades, estándar de calidad</td>
+                <td class="td-you">Tú como fundador</td>
+                <td>Define la dirección y el alma del negocio</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3>La secuencia correcta para delegar</h3>
+        <div class="checklist">
+          <div class="check-item">Hazlo manualmente primero</div>
+          <div class="check-item">Entiende dónde falla el proceso</div>
+          <div class="check-item">Documenta el criterio de decisión</div>
+          <div class="check-item">Automatiza lo repetible con IA</div>
+          <div class="check-item">Supervisa lo sensible con humanos</div>
+        </div>
+
+        <h3>Las tres preguntas de la matriz</h3>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Pregunta</th><th>Si la respuesta es "sí"</th></tr></thead>
+            <tbody>
+              <tr><td>¿Esto se repite mucho?</td><td>Probablemente puede automatizarse con IA</td></tr>
+              <tr><td>¿Un error aquí sería costoso?</td><td>Necesita supervisión humana</td></tr>
+              <tr><td>¿Esto afecta dirección, reputación o estructura?</td><td>No deberías soltarlo del todo</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="callout gold">La IA ejecuta. Los humanos juzgan. Tú diriges. Ese equilibrio no solo te hace más productivo: te hace más sólido.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CAPÍTULO 10 -->
+  <section class="section" id="cap10">
+    <div class="section-inner">
+      <div class="chapter-header">
+        <div class="chapter-number">Capítulo 10</div>
+        <h2 class="chapter-title">Cómo invertir bien</h2>
+        <p class="chapter-subtitle">Qué pagar primero y cómo escalar sin romper caja</p>
+      </div>
+      <div class="content">
+        <p>Si gastas mal, te quedas sin caja. Si no gastas, te estancas. Escalar no es solo construir: es asignar bien los recursos.</p>
+
+        <h3>Las 3 capas de inversión</h3>
+        <div class="phases">
+          <div class="phase">
+            <div class="phase-label">Capa 1</div>
+            <div class="phase-title">Supervivencia</div>
+            <ul>
+              <li>Herramientas esenciales</li>
+              <li>Canal de adquisición</li>
+              <li>Sistema de entrega</li>
+            </ul>
+          </div>
+          <div class="phase">
+            <div class="phase-label">Capa 2</div>
+            <div class="phase-title">Estabilidad</div>
+            <ul>
+              <li>Mejoras técnicas</li>
+              <li>Limpieza de procesos</li>
+              <li>Reducción de errores</li>
+              <li>Arquitectura básica</li>
+            </ul>
+          </div>
+          <div class="phase">
+            <div class="phase-label">Capa 3</div>
+            <div class="phase-title">Escalamiento</div>
+            <ul>
+              <li>Marketing pagado</li>
+              <li>Optimización de conversión</li>
+              <li>Crecimiento de tráfico</li>
+              <li>Expansión de producto</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="callout">El escalamiento solo funciona bien si las capas anteriores están sólidas. <strong>Nunca inviertas fuera de orden.</strong></div>
+
+        <h3>Qué pagar primero vs. qué evitar</h3>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>✅ Invierte en esto primero</th><th>❌ Evita esto por ahora</th></tr></thead>
+            <tbody>
+              <tr><td>Lo que genera ingresos directos</td><td>Herramientas complejas que no usas</td></tr>
+              <tr><td>Lo que elimina un cuello de botella crítico</td><td>Branding exagerado al inicio</td></tr>
+              <tr><td>Lo que libera tu tiempo estratégico</td><td>Features que nadie pidió</td></tr>
+              <tr><td>Estructura técnica que sostiene el crecimiento</td><td>"Mejoras" que no impactan ventas</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="callout gold">La métrica que de verdad importa en esta etapa: <strong>retorno sobre tiempo y atención</strong>, no solo sobre dinero.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CAPÍTULO 11 -->
+  <section class="section" id="cap11">
+    <div class="section-inner">
+      <div class="chapter-header">
+        <div class="chapter-number">Capítulo 11</div>
+        <h2 class="chapter-title">Tres escenarios reales</h2>
+        <p class="chapter-subtitle">Cuándo seguir solo, apoyarte en IA o traer ayuda técnica</p>
+      </div>
+      <div class="content">
+        <p>La decisión correcta no existe en abstracto: depende del momento. No preguntes solo "¿necesito contratar?" Pregunta: <strong>"¿mi cuello de botella hoy es claridad, repetición o complejidad?"</strong></p>
+
+        <h3>Los tres escenarios y sus señales</h3>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr><th>Cuello de botella</th><th>Escenario</th><th>Solución adecuada</th><th>Error típico</th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Claridad</strong></td>
+                <td>No sabes qué quiere el cliente ni si hay mercado real</td>
+                <td>Seguir solo, validar más, hablar con clientes</td>
+                <td>Automatizar antes de entender el problema</td>
+              </tr>
+              <tr>
+                <td><strong>Repetición</strong></td>
+                <td>Vendes pero todo depende de ti y consume demasiado tiempo</td>
+                <td>Apoyarte en IA, automatizar procesos repetibles</td>
+                <td>Contratar alguien cuando la IA lo resolvería</td>
+              </tr>
+              <tr>
+                <td><strong>Complejidad</strong></td>
+                <td>El sistema funciona pero cada cambio lo fragiliza</td>
+                <td>Traer ayuda técnica especializada</td>
+                <td>Seguir solo o pedir más IA cuando lo que se necesita es estructura</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="insight">
+          <div class="insight-inner">
+            <p class="insight-text">El error no está en seguir solo. El error no está en usar IA. El error está en aplicar la solución correcta en la etapa equivocada.</p>
+            <p class="insight-attr">— Solo con IA, Cap. 11</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CAPÍTULO 12 -->
+  <section class="section" id="cap12">
+    <div class="section-inner">
+      <div class="chapter-header">
+        <div class="chapter-number">Capítulo 12</div>
+        <h2 class="chapter-title">Hoja de ruta práctica</h2>
+        <p class="chapter-subtitle">Cómo avanzar desde hoy sin improvisar</p>
+      </div>
+      <div class="content">
+        <h3>Paso 1: identifica en qué etapa estás</h3>
+        <div class="phases">
+          <div class="phase">
+            <div class="phase-label">Etapa 1</div>
+            <div class="phase-title">Validación</div>
+            <ul>
+              <li>No vendes de forma consistente</li>
+              <li>Ajustas tu oferta</li>
+              <li>Pruebas canales y mensajes</li>
+            </ul>
+          </div>
+          <div class="phase">
+            <div class="phase-label">Etapa 2</div>
+            <div class="phase-title">Sistematización</div>
+            <ul>
+              <li>Ya vendes</li>
+              <li>Tienes tareas repetitivas</li>
+              <li>El negocio te consume demasiado</li>
+            </ul>
+          </div>
+          <div class="phase">
+            <div class="phase-label">Etapa 3</div>
+            <div class="phase-title">Complejidad</div>
+            <ul>
+              <li>Tienes usuarios activos</li>
+              <li>Cada cambio genera fricción</li>
+              <li>Depende de estructura frágil</li>
+            </ul>
+          </div>
+        </div>
+
+        <h3>Paso 2: reconoce tu cuello de botella real</h3>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>¿Qué te frena hoy?</th><th>Lo que necesitas</th></tr></thead>
+            <tbody>
+              <tr><td>Falta de claridad</td><td>Validar más, hablar con clientes</td></tr>
+              <tr><td>Repetición excesiva</td><td>Sistema e IA para automatizar</td></tr>
+              <tr><td>Complejidad creciente</td><td>Estructura y ayuda humana especializada</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3>Paso 3: una prioridad para los próximos 30 días</h3>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Si estás en…</th><th>Tu prioridad es…</th></tr></thead>
+            <tbody>
+              <tr><td>Etapa 1 (validación)</td><td>Hablar con clientes, probar mensajes, vender antes de sofisticar</td></tr>
+              <tr><td>Etapa 2 (sistematización)</td><td>Mapear tareas repetitivas, automatizar 1-2 procesos, documentar</td></tr>
+              <tr><td>Etapa 3 (complejidad)</td><td>Detectar fragilidades, simplificar, evaluar apoyo técnico</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3>Paso 4: checklist de decisión</h3>
+        <div class="checklist">
+          <div class="check-item">¿Esto genera ingresos o solo se ve bien?</div>
+          <div class="check-item">¿Esto reduce fricción o agrega complejidad?</div>
+          <div class="check-item">¿Esto libera mi tiempo o me ata más?</div>
+          <div class="check-item">¿Esto puede hacerlo la IA con supervisión?</div>
+          <div class="check-item">¿Esto requiere criterio humano real?</div>
+        </div>
+
+        <h3>Señales de que vas bien</h3>
+        <div class="signal-grid">
+          <div class="signal-box green">
+            <div class="signal-box-label">✅ Avanzas bien</div>
+            <ul>
+              <li>Entiendes mejor tu negocio</li>
+              <li>Tomas menos decisiones impulsivas</li>
+              <li>Tu operación se vuelve más simple</li>
+              <li>Tu energía mejora</li>
+              <li>El crecimiento se siente más estable</li>
+            </ul>
+          </div>
+          <div class="signal-box red">
+            <div class="signal-box-label">🚩 Para y revisa</div>
+            <ul>
+              <li>Cada semana cambias de dirección</li>
+              <li>Agregas herramientas sin resolver el fondo</li>
+              <li>La IA te hace producir más, pero no decidir mejor</li>
+              <li>Más ocupado, pero no más cerca de una operación sana</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="insight">
+          <div class="insight-inner">
+            <p class="insight-text">En 2026, construir es más fácil que nunca. Pero dirigir bien sigue siendo escaso.</p>
+            <p class="insight-attr">— Solo con IA, Cap. 12</p>
+          </div>
+        </div>
+
+        <div class="callout gold">La pregunta correcta no es "¿qué puedo hacer con IA?" La pregunta correcta es: <strong>"¿qué debería hacer yo, qué delegar y en qué momento?"</strong></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONCLUSIÓN -->
+  <section class="section" id="conclusion">
+    <div class="section-inner">
+      <div class="chapter-header">
+        <div class="chapter-number">Conclusión</div>
+        <h2 class="chapter-title">No se trata de hacer más. Se trata de decidir mejor.</h2>
+      </div>
+      <div class="content">
+        <p>Si llegaste hasta aquí, probablemente ya entendiste algo esencial:</p>
+        <div class="callout">👉 La IA no vino a reemplazar tu criterio. <strong>Vino a ponerlo a prueba.</strong></div>
+        <p>Porque ahora puedes construir más rápido, automatizar más cosas, lanzar antes y operar con menos estructura. Pero nada de eso garantiza que estés construyendo bien. Ese sigue siendo tu trabajo.</p>
+
+        <h3>La madurez real del solopreneur</h3>
+        <div class="phases">
+          <div class="phase"><div class="phase-label">Etapa 1</div><div class="phase-title">Validar</div></div>
+          <div class="phase"><div class="phase-label">Etapa 2</div><div class="phase-title">Sistematizar</div></div>
+          <div class="phase"><div class="phase-label">Etapa 3</div><div class="phase-title">Simplificar y escalar</div></div>
+        </div>
+
+        <div class="insight">
+          <div class="insight-inner">
+            <p class="insight-text">Empieza simple. Automatiza con criterio. Contrata cuando la complejidad lo exija.</p>
+            <p class="insight-attr">— La frase central del libro</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- AUTOR -->
+  <div class="author-card" id="autor">
+    <div class="author-card-inner">
+      <div class="author-label">Sobre el autor</div>
+      <div class="author-name">Juan Carlos Álvarez Lagos</div>
+      <p class="author-bio">Tech Lead en Praxis Studio LLC y creador de la marca <strong style="color:white">juanklagos Dev</strong>. Se especializa en arquitectura de software, desarrollo de productos digitales y construcción de sistemas que no solo funcionan hoy, sino que pueden sostener el crecimiento de mañana.</p>
+      <p class="author-bio" style="margin-top:1rem;">También impulsa una visión práctica sobre cómo emprendedores y equipos pueden usar inteligencia artificial con más criterio, estructura y claridad. Participa activamente en <strong style="color:white">Cúcuta Dev</strong>, apostando por una cultura de aprendizaje, tecnología y creación con propósito.</p>
+      <div class="author-tags">
+        <span class="author-tag">Arquitectura de Software</span>
+        <span class="author-tag">Productos Digitales</span>
+        <span class="author-tag">IA con criterio</span>
+        <span class="author-tag">Cúcuta Dev</span>
+        <span class="author-tag">juanklagos.dev</span>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /#main -->
+
+<script>
+// Progress bar
+function updateProgress() {
+  const doc = document.documentElement;
+  const scrollTop = window.scrollY || doc.scrollTop;
+  const scrollHeight = doc.scrollHeight - doc.clientHeight;
+  const progress = scrollHeight > 0 ? (scrollTop / scrollHeight) * 100 : 0;
+  document.getElementById('progress-bar').style.setProperty('--progress', progress + '%');
+}
+window.addEventListener('scroll', updateProgress, { passive: true });
+
+// Active nav link
+const navLinks = document.querySelectorAll('.nav-link[href^="#"]');
+const sections = document.querySelectorAll('section[id], div[id="autor"]');
+const indicator = document.getElementById('chapter-indicator');
+
+const chapterNames = {
+  cover: 'Portada',
+  antes: 'Antes de empezar',
+  contenido: 'Contenido',
+  cap1: 'Cap. 1 — La revolución silenciosa',
+  cap2: 'Cap. 2 — La mentira del "todo con IA"',
+  cap3: 'Cap. 3 — Tu primer negocio',
+  cap4: 'Cap. 4 — Tu equipo digital',
+  cap5: 'Cap. 5 — El muro invisible',
+  cap6: 'Cap. 6 — Cuándo necesitas un developer',
+  cap7: 'Cap. 7 — El costo real',
+  cap8: 'Cap. 8 — El factor humano',
+  cap9: 'Cap. 9 — Qué delegar',
+  cap10: 'Cap. 10 — Cómo invertir',
+  cap11: 'Cap. 11 — Tres escenarios',
+  cap12: 'Cap. 12 — Hoja de ruta',
+  conclusion: 'Conclusión',
+  autor: 'Sobre el autor'
+};
+
+function updateActive() {
+  let current = '';
+  sections.forEach(s => {
+    const rect = s.getBoundingClientRect();
+    if (rect.top <= 80) current = s.id;
+  });
+  navLinks.forEach(l => {
+    l.classList.toggle('active', l.getAttribute('href') === '#' + current);
+  });
+  if (current && chapterNames[current]) {
+    indicator.textContent = chapterNames[current];
+  }
+}
+
+window.addEventListener('scroll', updateActive, { passive: true });
+updateActive();
+
+// Mobile menu
+function toggleMenu() {
+  const sidebar = document.getElementById('sidebar');
+  const backdrop = document.getElementById('sidebar-backdrop');
+  const isOpen = sidebar.classList.toggle('open');
+  backdrop.classList.toggle('open', isOpen);
+  document.body.style.overflow = isOpen ? 'hidden' : '';
+}
+
+// Close sidebar on link click (mobile)
+navLinks.forEach(l => {
+  l.addEventListener('click', () => {
+    if (window.innerWidth < 900) {
+      document.getElementById('sidebar').classList.remove('open');
+      document.getElementById('sidebar-backdrop').classList.remove('open');
+      document.body.style.overflow = '';
+    }
+  });
+});
+</script>
+</body>
+</html>
