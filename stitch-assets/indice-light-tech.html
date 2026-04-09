@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200;300;400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "surface-container-high": "#dfe3e6",
+                    "on-tertiary-fixed": "#001930",
+                    "secondary-container": "#dae2fd",
+                    "on-primary-container": "#00555a",
+                    "on-error-container": "#570008",
+                    "on-secondary-fixed-variant": "#535b71",
+                    "primary-container": "#00f1fe",
+                    "surface-variant": "#d9dde0",
+                    "on-tertiary-fixed-variant": "#003b66",
+                    "on-error": "#ffefee",
+                    "on-secondary": "#f0f2ff",
+                    "primary-fixed-dim": "#00e2ee",
+                    "error-container": "#fb5151",
+                    "error-dim": "#9f0519",
+                    "outline": "#747779",
+                    "tertiary-container": "#6fb5ff",
+                    "on-tertiary": "#edf3ff",
+                    "tertiary-dim": "#00528b",
+                    "surface-tint": "#00666c",
+                    "secondary": "#535b71",
+                    "on-surface": "#2c2f31",
+                    "background": "#f5f7f9",
+                    "surface-dim": "#d0d5d8",
+                    "error": "#b31b25",
+                    "primary-fixed": "#00f1fe",
+                    "surface-container-lowest": "#ffffff",
+                    "on-primary-fixed-variant": "#006065",
+                    "on-primary": "#cdfbff",
+                    "tertiary-fixed-dim": "#4da8fe",
+                    "on-secondary-fixed": "#373f54",
+                    "surface": "#f5f7f9",
+                    "outline-variant": "#abadaf",
+                    "primary": "#00666c",
+                    "inverse-on-surface": "#9a9d9f",
+                    "secondary-fixed": "#dae2fd",
+                    "inverse-primary": "#00f1fe",
+                    "primary-dim": "#00595e",
+                    "secondary-fixed-dim": "#ccd4ee",
+                    "on-secondary-container": "#4a5167",
+                    "on-surface-variant": "#595c5e",
+                    "secondary-dim": "#484f65",
+                    "surface-bright": "#f5f7f9",
+                    "on-tertiary-container": "#003258",
+                    "tertiary": "#005e9e",
+                    "surface-container-highest": "#d9dde0",
+                    "surface-container": "#e5e9eb",
+                    "tertiary-fixed": "#6fb5ff",
+                    "surface-container-low": "#eef1f3",
+                    "inverse-surface": "#0b0f10",
+                    "on-background": "#2c2f31",
+                    "on-primary-fixed": "#004145"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.125rem",
+                    "lg": "0.25rem",
+                    "xl": "0.5rem",
+                    "full": "0.75rem"
+            },
+            "fontFamily": {
+                    "headline": ["Manrope"],
+                    "body": ["Manrope"],
+                    "label": ["Manrope"]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .glass-nav {
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+        }
+    </style>
+</head>
+<body class="bg-surface font-body text-on-surface antialiased">
+<!-- TopNavBar Navigation Shell -->
+<nav class="fixed top-0 w-full z-50 bg-[#f5f7f9]/80 backdrop-blur-md shadow-sm">
+<div class="flex justify-between items-center px-8 py-4 w-full max-w-7xl mx-auto">
+<div class="text-xl font-extrabold text-[#2c2f31] font-manrope tracking-tight">
+                The Luminous Technical Editorial
+            </div>
+<div class="hidden md:flex items-center space-x-8">
+<a class="text-[#2c2f31]/60 font-manrope tracking-tight font-bold hover:text-[#00666c] transition-colors duration-200" href="#">Library</a>
+<a class="text-[#2c2f31]/60 font-manrope tracking-tight font-bold hover:text-[#00666c] transition-colors duration-200" href="#">Annotations</a>
+<a class="text-[#2c2f31]/60 font-manrope tracking-tight font-bold hover:text-[#00666c] transition-colors duration-200" href="#">Search</a>
+<a class="text-[#2c2f31]/60 font-manrope tracking-tight font-bold hover:text-[#00666c] transition-colors duration-200" href="#">Settings</a>
+</div>
+<div class="flex items-center space-x-4">
+<span class="material-symbols-outlined text-[#00666c]" data-icon="account_circle">account_circle</span>
+</div>
+</div>
+</nav>
+<div class="flex min-h-screen pt-20">
+<!-- SideNavBar Navigation Shell -->
+<aside class="hidden md:flex flex-col h-screen w-64 border-r border-[#00f1fe]/15 bg-[#f5f7f9] sticky top-20">
+<div class="flex flex-col h-full py-8 space-y-6">
+<div class="px-6 space-y-1">
+<h3 class="text-lg font-bold text-[#2c2f31]">Table of Contents</h3>
+<p class="text-[10px] uppercase tracking-widest text-on-surface-variant">The Luminous Technical Editorial</p>
+</div>
+<div class="flex-1 space-y-1">
+<div class="text-[#2c2f31] font-bold border-l-4 border-[#00f1fe] pl-4 flex items-center py-2 bg-[#00f1fe]/5">
+<span class="material-symbols-outlined mr-3 text-sm" data-icon="book">book</span>
+<span class="text-sm font-manrope">Introduction</span>
+</div>
+<div class="text-[#2c2f31]/50 pl-4 flex items-center py-2 hover:bg-[#00f1fe]/10 transition-all duration-300">
+<span class="material-symbols-outlined mr-3 text-sm" data-icon="architecture">architecture</span>
+<span class="text-sm font-manrope">System Architecture</span>
+</div>
+<div class="text-[#2c2f31]/50 pl-4 flex items-center py-2 hover:bg-[#00f1fe]/10 transition-all duration-300">
+<span class="material-symbols-outlined mr-3 text-sm" data-icon="palette">palette</span>
+<span class="text-sm font-manrope">UI Patterns</span>
+</div>
+<div class="text-[#2c2f31]/50 pl-4 flex items-center py-2 hover:bg-[#00f1fe]/10 transition-all duration-300">
+<span class="material-symbols-outlined mr-3 text-sm" data-icon="extension">extension</span>
+<span class="text-sm font-manrope">Component Logic</span>
+</div>
+<div class="text-[#2c2f31]/50 pl-4 flex items-center py-2 hover:bg-[#00f1fe]/10 transition-all duration-300">
+<span class="material-symbols-outlined mr-3 text-sm" data-icon="verified">verified</span>
+<span class="text-sm font-manrope">Final Thoughts</span>
+</div>
+</div>
+<div class="px-6 mt-auto">
+<button class="w-full py-3 bg-gradient-to-r from-primary to-primary-dim text-white text-xs font-bold rounded-md tracking-widest uppercase">
+                        Bookmark Page
+                    </button>
+</div>
+</div>
+</aside>
+<!-- Main Content Canvas -->
+<main class="flex-1 px-8 md:px-16 py-12 bg-surface">
+<header class="max-w-5xl mb-24">
+<div class="flex items-center gap-4 mb-4">
+<div class="h-12 w-[2px] bg-primary-container"></div>
+<span class="text-xs font-bold tracking-[0.2em] text-primary uppercase">Volume 01 // Archive</span>
+</div>
+<h1 class="text-[4.5rem] md:text-[6rem] leading-none font-extrabold text-on-surface tracking-tighter mb-6">
+                    KINETIC <span class="text-primary-container" style="text-shadow: 0 0 40px rgba(0, 241, 254, 0.2)">ARCHIVE</span>
+</h1>
+<p class="text-body-lg text-on-surface-variant max-w-2xl leading-relaxed">
+                    A high-exposure technical repository documenting the evolution of fluid interface logic and autonomous system structures within the digital curator's landscape.
+                </p>
+</header>
+<!-- Bento Grid Section -->
+<section class="grid grid-cols-1 md:grid-cols-12 gap-8 max-w-7xl mx-auto mb-24">
+<!-- Introduction Node -->
+<div class="md:col-span-8 group bg-surface-container-lowest p-8 rounded-xl relative overflow-hidden transition-all duration-300">
+<div class="flex justify-between items-start relative z-10">
+<div>
+<span class="text-[10px] font-bold text-primary tracking-[0.3em] uppercase mb-2 block">Chapter 01</span>
+<h2 class="text-3xl font-extrabold mb-4 tracking-tight">Introduction</h2>
+</div>
+<span class="material-symbols-outlined text-primary-container text-4xl" data-icon="bolt">bolt</span>
+</div>
+<p class="text-on-surface-variant mb-8 max-w-md">Defining the fundamental parameters of kinetic systems and the philosophical shift toward curated digital experiences.</p>
+<div class="space-y-2">
+<div class="flex justify-between text-[10px] font-bold uppercase tracking-widest text-outline">
+<span>Processing Index</span>
+<span>92%</span>
+</div>
+<div class="h-1 w-full bg-surface-container rounded-full overflow-hidden">
+<div class="h-full bg-primary-container w-[92%] transition-all duration-500"></div>
+</div>
+</div>
+</div>
+<!-- The Data Void Node -->
+<div class="md:col-span-4 bg-surface-container-low p-8 rounded-xl flex flex-col justify-between border-b-4 border-primary-container">
+<div>
+<span class="text-[10px] font-bold text-on-surface-variant tracking-[0.3em] uppercase mb-2 block">Chapter 02</span>
+<h2 class="text-2xl font-bold mb-4 tracking-tight">The Data Void</h2>
+</div>
+<div class="space-y-4">
+<div class="flex items-center gap-3 text-xs font-mono text-primary">
+<span class="h-1.5 w-1.5 rounded-full bg-primary-container"></span>
+<span>VOID_SCAN_ACTIVE</span>
+</div>
+<div class="flex items-center gap-3 text-xs font-mono text-outline">
+<span class="h-1.5 w-1.5 rounded-full bg-outline/20"></span>
+<span>NULL_SET_DETECTION</span>
+</div>
+</div>
+</div>
+<!-- Kinetic Flow Node -->
+<div class="md:col-span-4 h-80 relative rounded-xl overflow-hidden group">
+<img alt="Abstract fluid metallic forms in high contrast white and cyan" class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" data-alt="Close-up of abstract fluid metallic ripples reflecting soft cyan light on a pristine white background editorial style" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAZBaG0Qy-jgpHErcK5nFQTEkqsf9ctctozEnRnBY5fUY6kgMZ0vCQDORUGGhNsDHxR_ONzYgVst-Ut9_KMJ9EWq4YkNm3fhA6HIgiZABtuZnnUxaceutbAOYAA8NrLll7WBwSb3UW6OUGNIPPLfDdMjA85G1NxWmkoyeaRrLWqvEHHJrpjboBgv9I-OTBVkOrFsy_VyGZM5OJ7f5ol_v6fTuHdOWc3RNG-BazAcow84QrNjM3RjTn475h6WcTXljaRIt5_q5OEUq0"/>
+<div class="absolute inset-0 bg-gradient-to-t from-primary/80 to-transparent"></div>
+<div class="absolute bottom-0 left-0 p-8">
+<span class="text-[10px] font-bold text-primary-container tracking-[0.3em] uppercase mb-1 block">Chapter 03</span>
+<h2 class="text-2xl font-bold text-white tracking-tight">Kinetic Flow</h2>
+</div>
+</div>
+<!-- Neural Networks Node -->
+<div class="md:col-span-8 bg-surface-container-lowest p-8 rounded-xl shadow-sm flex flex-col md:flex-row gap-8 items-center">
+<div class="flex-1">
+<span class="text-[10px] font-bold text-primary tracking-[0.3em] uppercase mb-2 block">Chapter 04</span>
+<h2 class="text-3xl font-extrabold mb-4 tracking-tight">Neural Networks</h2>
+<p class="text-on-surface-variant text-sm leading-relaxed mb-6">Autonomous mapping of interconnected logic nodes across the editorial ecosystem.</p>
+<div class="grid grid-cols-2 gap-4">
+<div class="bg-surface-container px-4 py-2 rounded flex items-center justify-between">
+<span class="text-[10px] font-bold uppercase tracking-widest text-outline">Synapse</span>
+<span class="text-xs font-mono text-primary">4.2k</span>
+</div>
+<div class="bg-surface-container px-4 py-2 rounded flex items-center justify-between">
+<span class="text-[10px] font-bold uppercase tracking-widest text-outline">Latency</span>
+<span class="text-xs font-mono text-primary">0.02ms</span>
+</div>
+</div>
+</div>
+<div class="w-full md:w-48 aspect-square rounded-lg bg-surface-container overflow-hidden flex items-center justify-center p-4">
+<div class="relative w-full h-full">
+<!-- SVG Decorative Tech Pattern -->
+<svg class="w-full h-full text-primary-container/30" viewbox="0 0 100 100">
+<circle cx="50" cy="50" fill="none" r="40" stroke="currentColor" stroke-width="0.5"></circle>
+<circle cx="50" cy="50" fill="none" r="25" stroke="currentColor" stroke-width="0.5"></circle>
+<line stroke="currentColor" stroke-width="0.5" x1="50" x2="50" y1="10" y2="90"></line>
+<line stroke="currentColor" stroke-width="0.5" x1="10" x2="90" y1="50" y2="50"></line>
+</svg>
+<div class="absolute inset-0 flex items-center justify-center">
+<span class="material-symbols-outlined text-primary text-4xl" data-icon="hub">hub</span>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Metadata / Progress Footer for Chapter -->
+<div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-end border-t border-primary-container/10 pt-12 gap-8">
+<div class="space-y-4">
+<h4 class="text-[10px] font-bold uppercase tracking-[0.4em] text-outline">Archive Statistics</h4>
+<div class="flex gap-12">
+<div>
+<span class="block text-2xl font-bold">1.2 TB</span>
+<span class="text-[10px] text-on-surface-variant font-mono">ENCRYPTED_VOLUME</span>
+</div>
+<div>
+<span class="block text-2xl font-bold text-primary">98.4%</span>
+<span class="text-[10px] text-on-surface-variant font-mono">INTEGRITY_INDEX</span>
+</div>
+</div>
+</div>
+<div class="flex gap-4">
+<button class="px-6 py-3 bg-surface-container text-on-surface font-bold text-xs uppercase tracking-widest hover:bg-surface-container-high transition-colors">
+                        Download Manifest
+                    </button>
+<button class="px-6 py-3 bg-primary text-white font-bold text-xs uppercase tracking-widest hover:bg-primary-dim transition-colors flex items-center gap-2">
+                        Next Node <span class="material-symbols-outlined text-sm" data-icon="chevron_right">chevron_right</span>
+</button>
+</div>
+</div>
+</main>
+</div>
+<!-- Footer Shell -->
+<footer class="bg-[#f5f7f9] w-full py-12 border-t border-[#00f1fe]/10">
+<div class="flex flex-col md:flex-row justify-between items-center px-12 max-w-7xl mx-auto">
+<div class="font-manrope uppercase tracking-widest text-[10px] text-[#2c2f31]/40 mb-6 md:mb-0">
+                © 2024 The Digital Curator Editorial. All rights reserved.
+            </div>
+<div class="flex flex-wrap justify-center gap-8">
+<a class="font-manrope uppercase tracking-widest text-[10px] text-[#2c2f31]/40 hover:text-[#00666c] opacity-80 hover:opacity-100 transition-opacity" href="#">Previous Chapter</a>
+<a class="font-manrope uppercase tracking-widest text-[10px] text-[#2c2f31]/40 hover:text-[#00666c] opacity-80 hover:opacity-100 transition-opacity" href="#">Next Chapter</a>
+<a class="font-manrope uppercase tracking-widest text-[10px] text-[#00f1fe] font-bold hover:text-[#00666c] opacity-80 hover:opacity-100 transition-opacity" href="#">Back to Top</a>
+</div>
+</div>
+</footer>
+</body></html>
