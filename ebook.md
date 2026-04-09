@@ -101,6 +101,12 @@ Ahora:
 
 👉 Entramos en la era de la automatización cognitiva
 
+### Acción inmediata de 5 minutos
+
+Escribe en una nota esta pregunta:
+
+👉 ¿Cuál es la tarea que más tiempo te quita hoy y cómo se vería si la IA la hiciera por ti?
+
 ---
 
 ### La Superagencia
@@ -265,6 +271,20 @@ Luego:
 
 👉 La IA construye… no diseña bien sistemas complejos
 
+Y aquí aparece una diferencia importante:
+
+Una cosa es generar algo que corre.
+Otra muy distinta es definir una estructura que pueda mantenerse, entenderse y evolucionar bien con el tiempo.
+
+Por eso, cuando empiezas a construir algo más serio, no basta con pedirle a la IA que escriba código o conecte piezas.
+
+Necesitas una forma de pensar antes de ejecutar.
+
+Ahí es donde metodologías como el **Spec-Driven Development (SDD)** se vuelven valiosas: primero se define con claridad qué problema se resuelve, cómo debería comportarse el sistema y qué límites debe tener… y después se implementa.
+
+👉 La velocidad sin especificación produce fragilidad.
+👉 La claridad antes de ejecutar produce sistemas más sostenibles.
+
 ---
 
 ### ¿La IA reemplaza developers?
@@ -349,6 +369,25 @@ Servicio de CV con IA:
 👉 Ya tienes negocio
 
 ---
+
+### Tip de Superagencia
+
+No solo muevas datos.
+
+👉 Delega decisiones simples.
+
+La automatización tradicional suele hacer esto:
+
+- si llega un correo, guárdalo en una lista
+- si alguien llena un formulario, envía una notificación
+
+La automatización cognitiva va un paso más allá:
+
+- si llega un correo, analízalo con IA
+- clasifica si el lead tiene presupuesto o intención real
+- y responde con una propuesta base adaptada al contexto
+
+👉 Ahí la IA deja de ser solo un puente entre herramientas y se convierte en una capa de criterio inicial.
 
 ### Error común
 
@@ -651,6 +690,25 @@ Si ves esto, ya cruzaste la línea:
 
 👉 Esto es una alerta fuerte
 
+### 🚩 5 señales de que tu sistema es un castillo de naipes
+
+**1. Efecto dominó**  
+Arreglas algo… y se rompe otra parte sin una causa evidente.
+
+**2. Script de caja negra**  
+Tienes partes que funcionan, pero no sabes bien por qué ni cómo sostenerlas.
+
+**3. Miedo al cambio**  
+Postergas mejoras porque tocar el sistema se siente riesgoso.
+
+**4. Validación manual eterna**  
+Revisas todo una y otra vez porque ya no confías del todo en los resultados.
+
+**5. Falta de especificación**  
+No hay documentación clara; gran parte del sistema vive en prompts, parches o decisiones sueltas.
+
+👉 Cuando se acumulan varias de estas señales, el problema ya no es de productividad. Es de estructura.
+
 ---
 
 ### El error más común en este punto
@@ -783,6 +841,14 @@ O lo contrario:
 No contratas por volumen de trabajo.
 
 👉 Contratas por complejidad estructural.
+
+Y aquí conviene entender algo importante:
+
+Como líder técnico en Praxis Studio, he confirmado una y otra vez que el código no es lo más valioso que compras cuando contratas a alguien senior.
+
+👉 Lo que realmente compras es juicio técnico.
+
+La capacidad de ver riesgos antes de que exploten, simplificar lo que está frágil y tomar decisiones que una IA, por sí sola, todavía no sabe sostener bien en sistemas reales.
 
 ---
 
@@ -917,6 +983,18 @@ No contrates si:
 2. Pide soluciones, no tareas
 3. Empieza con algo acotado
 4. Evalúa pensamiento, no solo código
+
+### 🛠 Preguntas clave para tu primer senior developer
+
+No te enfoques solo en si sabe programar.
+
+Haz preguntas que revelen criterio:
+
+- **Si este sistema escala a 1,000 usuarios mañana, ¿qué es lo primero que va a explotar?**
+- **¿Cómo documentarías esta estructura para que otro humano —o una IA— pueda mantenerla sin depender de ti?**
+- **Dime una razón por la que NO deberíamos usar esta herramienta o este flujo que hoy construimos con IA.**
+
+👉 Las mejores respuestas no suenan impresionantes. Suenan claras, sobrias y realistas.
 
 ---
 
@@ -1487,6 +1565,12 @@ Si sí, necesita supervisión humana.
 
 Si sí, no deberías soltarlo del todo.
 
+| Nivel de tarea                                         | ¿Quién lo hace mejor? | Razón principal                                    |
+| ------------------------------------------------------ | --------------------- | -------------------------------------------------- |
+| Borradores, resúmenes, clasificación de datos          | IA                    | Alta velocidad y bajo costo de error               |
+| Arquitectura, legal, UX compleja, decisiones sensibles | Humano especializado  | Requiere contexto, responsabilidad y criterio real |
+| Visión, propuesta de valor, prioridades y estándar     | Tú como fundador      | Define la dirección y el alma del negocio          |
+
 ---
 
 ### Ejemplo práctico
@@ -1740,6 +1824,27 @@ Dos escenarios:
 - vendes más con lo mismo
 
 👉 El segundo siempre gana
+
+### Caso de estudio: por qué la estabilidad vende más que la novedad
+
+Cuando construyes un sistema propio, la tentación natural es agregar funciones rápido para que “se vea más completo”.
+
+Pero en proyectos reales, el orden correcto suele ser el contrario:
+
+👉 primero hacer sólido el motor
+👉 después ampliar lo visible
+
+Esa lógica también aplica a productos tipo CRM, plataformas internas o herramientas de operación.
+
+Antes de sumar más features, conviene preguntarte:
+
+- ¿esto hace el sistema más confiable?
+- ¿reduce errores?
+- ¿me permite crecer sin fragilidad?
+
+Porque muchas veces la estabilidad convierte mejor que la novedad.
+
+👉 Un sistema que falla poco vende más que uno que promete mucho pero se rompe.
 
 ---
 
@@ -2396,3 +2501,15 @@ Si quieres llevar estas ideas a tu caso concreto, puedes usar este libro como gu
 - qué parte ya necesita estructura o ayuda técnica
 
 Y si estás convirtiendo esto en una oferta, una auditoría o un servicio, este ebook también puede servirte como punto de partida para una conversación más estratégica y mejor enfocada.
+
+---
+
+# Sobre el autor
+
+Juan Carlos Álvarez Lagos es Tech Lead en Praxis Studio LLC y creador de la marca **juanklagos Dev**.
+
+Se especializa en arquitectura de software, desarrollo de productos digitales y construcción de sistemas que no solo funcionan hoy, sino que pueden sostener el crecimiento de mañana.
+
+También impulsa una visión práctica sobre cómo emprendedores y equipos pueden usar inteligencia artificial con más criterio, estructura y claridad.
+
+Además de su trabajo técnico, participa activamente en iniciativas de comunidad como **Cúcuta Dev**, apostando por una cultura de aprendizaje, tecnología y creación con propósito.
