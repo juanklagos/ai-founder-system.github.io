@@ -13,7 +13,7 @@ Guía práctica para emprendedores que quieren usar inteligencia artificial con 
 
 Este repositorio contiene el ebook **Escalar con IA**, un material pensado para ayudar a emprendedores, founders y operadores de negocio a tomar mejores decisiones en torno al uso de IA.
 
-No es una guía para vender humo ni para prometer automatización total.
+No es una guía para prometer resultados irreales ni para vender soluciones mágicas.
 
 Es un marco práctico para entender:
 
